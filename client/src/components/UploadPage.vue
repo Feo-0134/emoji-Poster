@@ -9,25 +9,6 @@
   </div>
   </el-header>
   <el-main class = "mainContent">
-    <!-- <el-button class="titleBox" @click=';'>Upload</el-button> -->
-    <div>
-    <!-- <input class="file" name="file" type="file" accept="image/png,image/gif,image/jpeg" @change="update"/> -->
-    <el-upload
-      class="upload-demo"
-      action="http://127.0.0.1:3000/api/upload"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :before-remove="beforeRemove"
-      multiple
-      :limit="3"
-      :on-exceed="handleExceed"
-      :file-list="fileList">
-      <el-button class="titleBox">Input Emotion</el-button>
-    </el-upload>
-    <el-button class="titleBox" @click="showPost = true">
-    <el-link :underline="false" href="javascript:;">Get Post</el-link>
-    </el-button>
-    </div>
     <div v-if="showPost == true">
     <el-row class = "marginTop60">
       <el-col>
@@ -36,7 +17,6 @@
           <div style="padding: 14px;">
             <span>Fresh Post</span>
             <div class="bottom clearfix">
-              <!-- <time class="time">{{ currentDate }}</time> -->
               <el-button type="text" class="button">Read More</el-button>
             </div>
           </div>
@@ -50,7 +30,6 @@
           <div style="padding: 14px;">
             <span>Fresh Post</span>
             <div class="bottom clearfix">
-              <!-- <time class="time">{{ currentDate }}</time> -->
               <el-button type="text" class="button">Read More</el-button>
             </div>
           </div>
@@ -64,7 +43,6 @@
           <div style="padding: 14px;">
             <span>Fresh Post</span>
             <div class="bottom clearfix">
-              <!-- <time class="time">{{ currentDate }}</time> -->
               <el-button type="text" class="button">Read More</el-button>
             </div>
           </div>
@@ -72,6 +50,34 @@
       </el-col>
     </el-row>
   </div>
+    <div>
+    <el-upload
+      class="upload-demo"
+      action="http://127.0.0.1:3000/api/upload"
+      :on-preview="handlePreview"
+      :on-remove="handleRemove"
+      :before-remove="beforeRemove"
+      multiple
+      :limit="3"
+      :on-exceed="handleExceed"
+      :file-list="fileList">
+      <el-button class="titleBox">Capture</el-button>
+    </el-upload>
+    <el-button class="titleBox" @click="showPost = true">
+    <el-link :underline="false" href="javascript:;">Get Post</el-link>
+    </el-button>
+    </div>
+    <div>
+      
+      <video id="video" width="500px" height="500px" autoplay="autoplay"></video>
+      <canvas id="canvas" width="500px" height="500px"></canvas>
+      <!-- <img id="imgTag" src="" alt="imgTag"> -->
+      <div>
+      <el-button @click="openMedia()">Turn on Camera</el-button>
+      <el-button @click="takePhoto()">Capture</el-button>
+      <el-button @click="closeMedia()">Turn off Camera</el-button>
+      </div>
+    </div>
   </el-main>
   <el-footer>a piece of blur code</el-footer>
 </el-container>
@@ -86,6 +92,7 @@
       message:"",
       fileList: [],
       showPost: false,
+      mediaStreamTrack: null,
     },
     data(){
       return {
@@ -129,6 +136,37 @@
       },
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
+      },
+      openMedia() {
+        let constraints = {
+            video: { width: 500, height: 500 },
+            audio: true
+        };
+        //获得video摄像头
+        let video = document.getElementById('video');     
+        let promise = navigator.mediaDevices.getUserMedia(constraints);
+        promise.then((mediaStream) => {
+            this.mediaStreamTrack = typeof mediaStream.stop === 'function' ? mediaStream : mediaStream.getTracks()[1];
+            video.srcObject = mediaStream;
+            video.play();
+        });
+      },
+      takePhoto() {
+        //获得Canvas对象
+        let video = document.getElementById('video');
+        let canvas = document.getElementById('canvas');
+        let ctx = canvas.getContext('2d');
+        ctx.drawImage(video, 0, 0, 500, 500);
+
+
+        // toDataURL  ---  可传入'image/png'---默认, 'image/jpeg'
+        let img = document.getElementById('canvas').toDataURL();
+        // 这里的img就是得到的图片
+        console.log('img-----', img);
+        document.getElementById('imgTag').src=img;
+      },
+      closeMedia() {
+        this.mediaStreamTrack.stop();
       }
     },
     computed:{
