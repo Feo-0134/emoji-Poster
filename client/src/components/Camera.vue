@@ -5,8 +5,9 @@
       <!-- <img id="imgTag" src="" alt="imgTag"> -->
       <div>
         <el-button @click="openMedia()">Turn on Camera</el-button>
-        <el-button @click="takePhoto()">Capture</el-button>
         <el-button @click="closeMedia()">Turn off Camera</el-button>
+        <el-button @click="takePhoto()">Capture</el-button>
+        
       </div>
     </div>
 </template>

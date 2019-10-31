@@ -61,13 +61,13 @@
       :limit="3"
       :on-exceed="handleExceed"
       :file-list="fileList">
-      <el-button class="titleBox">Capture</el-button>
+      <el-button class="titleBox" >Capture</el-button>
     </el-upload>
     <el-button class="titleBox" @click="showPost = true">
     <el-link :underline="false" href="javascript:;">Get Post</el-link>
     </el-button>
     </div>
-    <Camera />
+    <Camera v-show="showCamera"/>
   </el-main>
   <el-footer>a piece of blur code</el-footer>
 </el-container>
@@ -90,6 +90,7 @@ import Camera from './Camera.vue'
         message:"",
         fileList: [],
         showPost: false,
+        showCamera: false,
       }
     },
     methods: {

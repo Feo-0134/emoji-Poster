@@ -5,11 +5,12 @@ Created on Fri Oct 25 16:05:56 2019
 
 @author: junchengzhu
 """
-
+from __future__ import division
 import dlib                     #人脸识别的库dlib
 import numpy as np              #数据处理的库numpy
 import cv2                      #图像处理的库OpenCv
 from skimage import io          #>pip install scikit-image,scipy
+
 
 class face_emotion():
     def __init__(self):
@@ -62,7 +63,7 @@ class face_emotion():
                         cv2.rectangle(im_rd, (d.left(), d.top()), (d.right(), d.bottom()), (0, 0, 255))
                         # 计算人脸热别框边长
                         self.face_width = d.right() - d.left()
-
+                        # print self.face_width
                         # 使用预测器得到68点数据的坐标
                         shape = self.predictor(im_rd, d)
                         # 圆圈显示每个特征点
@@ -73,9 +74,9 @@ class face_emotion():
 
                         # 分析任意n点的位置关系来作为表情识别的依据
                         mouth_width = (shape.part(54).x - shape.part(48).x) / self.face_width  # 嘴巴咧开程度
-                        mouth_higth = (shape.part(66).y - shape.part(62).y) / self.face_width  # 嘴巴张开程度
-                        # print("嘴巴宽度与识别框宽度之比：",mouth_width_arv)
-                        # print("嘴巴高度与识别框高度之比：",mouth_higth_arv)
+                        mouth_hight = (shape.part(66).y - shape.part(62).y) / self.face_width  # 嘴巴张开程度
+                        # print("mouth_width",(shape.part(54).x - shape.part(48).x))
+                        # print("mouth_hight",(shape.part(66).y - shape.part(62).y))
 
                         # 通过两个眉毛上的10个特征点，分析挑眉程度和皱眉程度
                         brow_sum = 0  # 高度之和
@@ -85,7 +86,7 @@ class face_emotion():
                             frown_sum += shape.part(j + 5).x - shape.part(j).x
                             line_brow_x.append(shape.part(j).x)
                             line_brow_y.append(shape.part(j).y)
-                        print "self:"+str(self)
+                        # print "self:"+str(self)
                         # self.brow_k, self.brow_d = self.fit_slr(line_brow_x, line_brow_y)  # 计算眉毛的倾斜程度
                         tempx = np.array(line_brow_x)
                         tempy = np.array(line_brow_y)
@@ -105,7 +106,11 @@ class face_emotion():
 
                         # 分情况讨论
                         # 张嘴，可能是开心或者惊讶
-                        if round(mouth_higth >= 0.03):
+                        # print '-'
+                        # print mouth_hight
+                        # print brow_hight
+                        # print '-'
+                        if round(mouth_hight >= 0.03):
                             if eye_hight >= 0.056:
                                 cv2.putText(im_rd, "amazing", (d.left(), d.bottom() + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                                             (0, 0, 255), 2, 4)
@@ -115,7 +120,7 @@ class face_emotion():
 
                         # 没有张嘴，可能是正常和生气
                         else:
-                            if self.brow_k <= -0.3:
+                            if brow_hight <= -0.3:
                                 cv2.putText(im_rd, "angry", (d.left(), d.bottom() + 20), cv2.FONT_HERSHEY_SIMPLEX, 0.8,
                                             (0, 0, 255), 2, 4)
                             else:

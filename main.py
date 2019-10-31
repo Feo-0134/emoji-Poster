@@ -5,7 +5,7 @@ Created on Fri Oct 25 11:28:51 2019
 
 @author: junchengzhu
 """
-
+from __future__ import division
 import dlib                     #人脸识别的库dlib
 import numpy as np              #数据处理的库numpy
 import cv2                      #图像处理的库OpenCv
