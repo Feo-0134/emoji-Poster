@@ -10,46 +10,46 @@
   </el-header>
   <el-main class = "mainContent">
     <div v-if="showPost == true">
-    <el-row class = "marginTop60">
-      <el-col>
-        <el-card class="postCard" :body-style="{ padding: '0px' }">
-          <img src="../assets/img4.png" class="image">
-          <div style="padding: 14px;">
-            <span>Fresh Post</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">Read More</el-button>
+      <el-row class = "marginTop60" v-if="happy">
+        <el-col>
+          <el-card class="postCard" :body-style="{ padding: '0px' }">
+            <img src="../assets/img4.png" class="image">
+            <div style="padding: 14px;">
+              <span>Fresh Post</span>
+              <div class="bottom clearfix">
+                <el-button type="text" class="button">Read More</el-button>
+              </div>
             </div>
-          </div>
-        </el-card>
-      </el-col>
+          </el-card>
+        </el-col>
+        </el-row>
+        <el-row class = "marginTop60" v-if="!happy">
+        <el-col>
+          <el-card class="postCard" :body-style="{ padding: '0px' }">
+            <img src="../assets/img5.jpg" class="image">
+            <div style="padding: 14px;">
+              <span>Fresh Post</span>
+              <div class="bottom clearfix">
+                <el-button type="text" class="button">Read More</el-button>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
+        </el-row>
+        <el-row class = "marginTop60" v-if="false">
+        <el-col>
+          <el-card class="postCard" :body-style="{ padding: '0px' }">
+            <img src="../assets/img6.jpeg" class="image">
+            <div style="padding: 14px;">
+              <span>Fresh Post</span>
+              <div class="bottom clearfix">
+                <el-button type="text" class="button">Read More</el-button>
+              </div>
+            </div>
+          </el-card>
+        </el-col>
       </el-row>
-      <el-row class = "marginTop60">
-      <el-col>
-        <el-card class="postCard" :body-style="{ padding: '0px' }">
-          <img src="../assets/img5.jpg" class="image">
-          <div style="padding: 14px;">
-            <span>Fresh Post</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">Read More</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-      </el-row>
-      <el-row class = "marginTop60">
-      <el-col>
-        <el-card class="postCard" :body-style="{ padding: '0px' }">
-          <img src="../assets/img6.jpeg" class="image">
-          <div style="padding: 14px;">
-            <span>Fresh Post</span>
-            <div class="bottom clearfix">
-              <el-button type="text" class="button">Read More</el-button>
-            </div>
-          </div>
-        </el-card>
-      </el-col>
-    </el-row>
-  </div>
+    </div>
     <div>
     <el-upload
       class="upload-demo"
@@ -61,9 +61,9 @@
       :limit="3"
       :on-exceed="handleExceed"
       :file-list="fileList">
-      <el-button class="titleBox" >Capture</el-button>
+      <el-button class="titleBox">Capture</el-button>
     </el-upload>
-    <el-button class="titleBox" @click="showPost = true">
+    <el-button class="titleBox" @click="showPost = true;getResult()">
     <el-link :underline="false" href="javascript:;">Get Post</el-link>
     </el-button>
     </div>
@@ -91,6 +91,7 @@ import Camera from './Camera.vue'
         fileList: [],
         showPost: false,
         showCamera: false,
+        happy: false,
       }
     },
     methods: {
@@ -131,6 +132,19 @@ import Camera from './Camera.vue'
       beforeRemove(file, fileList) {
         return this.$confirm(`确定移除 ${ file.name }？`);
       },
+      getResult() {        
+        return new Promise((resolve, reject)=>{
+          this.$http.get('http://127.0.0.1:3000/api/getResult')
+          .then((response)=> {
+            console.log(response)
+            if(response.data === 'success'){
+              this.happy = true
+            }else {
+              this.happy = false
+            }
+          })
+        })
+      }
     },
     computed:{
       downloadApiPath() {

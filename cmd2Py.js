@@ -11,38 +11,17 @@ function sleep(milliSeconds) {
     while (new Date().getTime() < startTime + milliSeconds);
   }
 
-module.exports = function () {
-    var terminalCmd = 'python main.py'
-    exec(terminalCmd, function (error, stdout, stderr) {
+const test = () => {
+    exec('python main.py', function (error, stdout, stderr) {
         if(error){
             console.error('error: ' + error);
             return;
         }
-        console.log(stdout)
-        console.log(stderr)
-        fs.readFile('nature.png', function (err, data) {
-            if (err) {
-                console.error(err);
-            } else {
-                console.log("异步读取 DONE");
-                return 'nature'
-            }
-        });
-        fs.readFile('angry.png', function (err, data) {
-            if (err) {
-                return console.error(err);
-            } else {
-                console.log("异步读取 DONE");
-                return 'angry'
-            }
-        });
-        fs.readFile('amazing.png', function (err, data) {
-            if (err) {
-                return console.error(err);
-            } else {
-                console.log("异步读取 DONE");
-                return 'amazing'
-            }
-        });
     })
 }
+
+const testObj = {
+    test: test
+}
+
+module.exports = testObj

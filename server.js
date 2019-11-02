@@ -4,6 +4,7 @@ const koaBody = require('koa-body');
 const Router = require('koa-router');
 const cors = require('koa2-cors');
 const router = new Router({ prefix: '/api' })
+const bodyParser = require('koa-bodyparser')
 const Koa = require('koa');
 const fs = require('fs');
 const app = new Koa();
@@ -18,18 +19,6 @@ const emotionDetect = require('./cmd2Py')
 
 // serve files from ./public
 const servePublicFile = serve(path.join(__dirname, '/public'))
-
-
-// handle uploads
-const uploadFile = async function (ctx) {
-  var result = emotionDetect()
-  // const file = ctx.request.body.file;	// 获取上传文件
-	// const reader = fs.createReadStream(file.path);	// 创建可读流
-	// const upStream = fs.createWriteStream(`upload/${file.name}`);		// 创建可写流
-  // reader.pipe(upStream);	// 可读流通过管道写入可写流
-  console.log(result)
-	return ctx.body = 'nature';
-}
 
 function stat(file) {
   return new Promise(function(resolve, reject) {
@@ -55,7 +44,31 @@ const download = async function(ctx) {
   }
 }
 
-router.post('/upload', uploadFile)
+const imgStyle = async(ctx)=>{
+  try{
+    await emotionDetect.test() 
+  }catch(err){
+    ctx.response.status = err.statusCode || err.status || 500;
+    ctx.response.body = {
+      message: err.message
+    };
+  }
+}
+
+const getResult = (ctx)=>{
+  if(fs.existsSync('happy.png')) {
+    console.log('good')
+    ctx.body = 'success'
+  }else {
+    ctx.body = 'failed'
+  }
+}
+
+router.get('/upload', upload.any('png'), bodyParser(), (ctx)=>{
+  ctx.body = 'hello'
+})
+
+router.get('/getResult', getResult)
 
 app.use(cors({
   origin: function (ctx) {
@@ -73,6 +86,8 @@ app.use(cors({
 
 app
   .use(logger())
+  .use(router.allowedMethods())
+  .use(router.routes())
   .use(koaBody({ multipart: true,
     formidable: {
       maxFileSize: 200*1024*1024,	// 设置上传文件大小最大限制，默认2M
@@ -82,10 +97,12 @@ app
       }
     } 
   }))
+  .use(imgStyle)
   .use(servePublicFile)
-  .use(router.allowedMethods())
-  .use(router.routes())
   .use(download)
+
+
+
 
 
 

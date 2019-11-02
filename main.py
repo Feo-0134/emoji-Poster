@@ -21,7 +21,7 @@ class face_emotion():
         # 眉毛直线拟合数据缓冲
         line_brow_x = []
         line_brow_y = []
-        im_rd = cv2.imread("pic.png")
+        im_rd = cv2.imread("./upload/pic.png")
         img_gray = cv2.cvtColor(im_rd, cv2.COLOR_RGB2GRAY)
         faces = self.detector(img_gray, 0) # 检测到的人脸数
         # 待会要显示在屏幕上的字体
