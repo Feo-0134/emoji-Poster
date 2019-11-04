@@ -64,9 +64,20 @@ const getResult = (ctx)=>{
   }
 }
 
-router.post('/upload', upload.any('png'), (ctx)=>{
-  ctx.body = 'hello'
-})
+router.post('/upload', 
+  koaBody({ multipart: true,
+    formidable: {
+      maxFileSize: 200*1024*1024,	// 设置上传文件大小最大限制，默认2M
+      uploadDir: 'upload/',
+      onFileBegin: (name, file)=>{	// 文件存储之前对文件进行重命名处理
+          file.path = `upload/${file.name}`;
+      }
+    } 
+  }),
+  (ctx)=>{
+    ctx.body = ctx.request.files.file.name
+  }
+)
 
 router.get('/getResult', getResult)
 
@@ -75,23 +86,9 @@ app
   .use(logger())
   .use(router.routes())
   .use(router.allowedMethods())
-  .use(koaBody({ multipart: true,
-    formidable: {
-      maxFileSize: 200*1024*1024,	// 设置上传文件大小最大限制，默认2M
-      uploadDir: 'upload/',
-      onFileBegin: (name, file)=>{	// 文件存储之前对文件进行重命名处理
-          file.path = `upload/${file.name}`;
-      }
-    } 
-  }))
   .use(imgStyle)
   .use(servePublicFile)
   .use(download)
-
-
-
-
-
 
 // listen
 app.listen(3000);
