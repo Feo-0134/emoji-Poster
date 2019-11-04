@@ -53,7 +53,7 @@
     <div>
     <el-upload
       class="upload-demo"
-      action="http://127.0.0.1:3000/api/upload"
+      action="http://localhost:3000/api/upload"
       :on-preview="handlePreview"
       :on-remove="handleRemove"
       :before-remove="beforeRemove"
@@ -107,19 +107,6 @@ import Camera from './Camera.vue'
       downloadFile() {
         window.location.href = this.downloadApiPath
       },
-      update(e){
-        let file = e.target.files[0];
-        let param = new FormData(); 
-        param.append('file',file);
-        console.log(param.get('file'));
-        let config = {
-          headers:{'Content-Type':'multipart/form-data'}
-        }; //添加请求头
-        this.$http.post('http://127.0.0.1:3000/api/upload',param,config)
-          .then(response=>{
-            console.log(response.data);
-          })
-      },
       handleRemove(file, fileList) {
         console.log(file, fileList);
       },
@@ -134,7 +121,7 @@ import Camera from './Camera.vue'
       },
       getResult() {        
         return new Promise((resolve, reject)=>{
-          this.$http.get('http://127.0.0.1:3000/api/getResult')
+          this.$http.get('http://localhost:3000/api/getResult')
           .then((response)=> {
             console.log(response)
             if(response.data === 'success'){
@@ -149,12 +136,12 @@ import Camera from './Camera.vue'
     computed:{
       downloadApiPath() {
         return (
-          'http://127.0.0.1:3000/public/temp.zip'
+          'http://localhost:3000/public/temp.zip'
         );
       },
       uploadApiPath() {
         return (
-          'http://127.0.0.1:3000/api/upload'
+          'http://localhost:3000/api/upload'
         );
       },
       uploadApiPayload() {
