@@ -46,7 +46,7 @@ const download = async function(ctx) {
 
 const imgStyle = async(ctx)=>{
   try{
-    await emotionDetect.test() 
+    await emotionDetect.test(ctx.request.files.file.path) 
   }catch(err){
     ctx.response.status = err.statusCode || err.status || 500;
     ctx.response.body = {
@@ -58,24 +58,23 @@ const imgStyle = async(ctx)=>{
 const getResult = (ctx)=>{
   if(fs.existsSync('happy.png')) {
     console.log('good')
-    ctx.body = 'success'
+    ctx.body = 'happy'
   }else {
-    ctx.body = 'failed'
+    ctx.body = 'nature'
   }
 }
 
 router.post('/upload', 
   koaBody({ multipart: true,
     formidable: {
-      maxFileSize: 200*1024*1024,	// 设置上传文件大小最大限制，默认2M
+      maxFileSize: 200*1024*1024,
       uploadDir: 'upload/',
-      onFileBegin: (name, file)=>{	// 文件存储之前对文件进行重命名处理
-          file.path = `upload/${file.name}`;
-      }
+      onFileBegin: (name, file)=>{ file.path = `upload/${file.name}`}
     } 
   }),
-  (ctx)=>{
-    ctx.body = ctx.request.files.file.name
+  async (ctx, next)=>{
+    ctx.body = ctx.request.files.file.path
+    await next()
   }
 )
 
@@ -89,6 +88,7 @@ app
   .use(imgStyle)
   .use(servePublicFile)
   .use(download)
+
 
 // listen
 app.listen(3000);

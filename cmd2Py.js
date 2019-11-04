@@ -9,10 +9,10 @@ const fs = require('fs');
 function sleep(milliSeconds) {
     var startTime = new Date().getTime();
     while (new Date().getTime() < startTime + milliSeconds);
-  }
+}
 
-const test = () => {
-    exec('python main.py', function (error, stdout, stderr) {
+const test = (fileName) => {
+    exec('python main.py ' + fileName, function (error, stdout, stderr) {
         if(error){
             console.error('error: ' + error);
             return;

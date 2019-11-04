@@ -51,21 +51,21 @@
       </el-row>
     </div>
     <div>
-    <el-upload
-      class="upload-demo"
-      action="http://localhost:3000/api/upload"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :before-remove="beforeRemove"
-      multiple
-      :limit="3"
-      :on-exceed="handleExceed"
-      :file-list="fileList">
-      <el-button class="titleBox">Capture</el-button>
-    </el-upload>
-    <el-button class="titleBox" @click="showPost = true;getResult()">
-    <el-link :underline="false" href="javascript:;">Get Post</el-link>
-    </el-button>
+      <el-button class="titleBox" @click="showPost = true;getResult()">
+      <el-link :underline="false" href="javascript:;">Get Post</el-link>
+      </el-button>
+      <el-upload
+        class="upload-demo"
+        action="http://localhost:3000/api/upload"
+        :on-preview="handlePreview"
+        :on-remove="handleRemove"
+        :before-remove="beforeRemove"
+        multiple
+        :limit="3"
+        :on-exceed="handleExceed"
+        :file-list="fileList">
+        <el-button class="titleBox">Capture</el-button>
+      </el-upload>
     </div>
     <Camera v-show="showCamera"/>
   </el-main>
@@ -124,7 +124,7 @@ import Camera from './Camera.vue'
           this.$http.get('http://localhost:3000/api/getResult')
           .then((response)=> {
             console.log(response)
-            if(response.data === 'success'){
+            if(response.data === 'happy'){
               this.happy = true
             }else {
               this.happy = false
