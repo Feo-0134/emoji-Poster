@@ -12,7 +12,7 @@ const os = require('os');
 const path = require('path');
 const extname = path.extname;
 const URL = require('url');
-var multer = require("multer");
+const multer = require('@koa/multer');
 var upload = multer({dest:'./upload'});
 
 const emotionDetect = require('./cmd2Py')
@@ -64,7 +64,7 @@ const getResult = (ctx)=>{
   }
 }
 
-router.post('/upload', (ctx)=>{
+router.post('/upload', upload.any('png'), (ctx)=>{
   ctx.body = 'hello'
 })
 

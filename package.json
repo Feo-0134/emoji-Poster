@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/Feo-0134/Vue_NodeJS_FileSysComp#readme",
   "dependencies": {
+    "@koa/multer": "^2.0.0",
     "formidable": "^1.2.1",
     "fs": "0.0.1-security",
     "koa": "^2.10.0",
