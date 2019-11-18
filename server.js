@@ -73,6 +73,7 @@ router.post('/upload',
     } 
   }),
   async (ctx, next)=>{
+    console.log(ctx.request.files.file.path)
     ctx.body = ctx.request.files.file.path
     await next()
   }
